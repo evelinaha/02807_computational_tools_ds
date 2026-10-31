@@ -16,3 +16,7 @@ __pycache__/
 .pytest_cache/
 .ipynb_checkpoints/
 .DS_Store
+
+# Sample-run outputs are for checking the code only; commit the full-data results.
+docs/figures/sample*/
+docs/results/sample*/

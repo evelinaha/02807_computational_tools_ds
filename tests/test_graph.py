@@ -157,3 +157,28 @@ def test_edge_list_adapter_maps_and_merges():
     assert D[0, 2] == pytest.approx(0.9)      # A2 mapped to A -> max(0.2, 0.9)
     assert rep["unknown_book_edges"] == 1     # Z is not in our index
     assert np.allclose(D, D.T)
+
+
+# ------------------------------------------------------------------ recommender metrics
+
+def test_topk_metrics_by_hand():
+    from ctds.graph.recommend import _metrics_for
+    top = np.array([[3, 1, 2], [0, 1, 2], [4, 5, 6]])
+    # user 0: relevant {1, 9} -> hit at rank 2; user 1: relevant {0, 1, 2, 3} -> 3 hits; user 2: none relevant.
+    rel = sp.csr_matrix((np.ones(6), ([0, 0, 1, 1, 1, 1], [1, 9, 0, 1, 2, 3])), shape=(3, 10))
+    m = _metrics_for(top, rel, k=3)
+    d = 1 / np.log2(np.arange(2, 5))
+    assert m["hit"][0] == 1 and m["hit"][1] == 1
+    assert np.isnan(m["hit"][2])
+    assert m["recall"][0] == pytest.approx(0.5) and m["recall"][1] == pytest.approx(0.75)
+    assert m["ndcg"][0] == pytest.approx(d[1] / (d[0] + d[1]))
+    assert m["ndcg"][1] == pytest.approx(1.0)
+
+
+def test_community_recommender_prefers_users_community():
+    from ctds.graph.recommend import CommunityRecommender
+    # Two communities {0,1,2} and {3,4,5}; book 2 is the most central of community 0.
+    W = sym([(0, 2, 5), (1, 2, 5), (0, 1, 1), (3, 4, 1), (4, 5, 1), (3, 5, 1)], 6)
+    rec = CommunityRecommender(np.array([0, 0, 0, 1, 1, 1]), W, popularity=np.ones(6))
+    s = rec.scores(sp.csr_matrix(np.array([[1, 0, 0, 0, 0, 0]], dtype=np.float32)))[0]
+    assert s[2] > s[1] > s[3]
