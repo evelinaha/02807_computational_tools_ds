@@ -1,0 +1,3 @@
+part,reviews,users,books,liked_pct
+train (< cut-off),1738308,155442,47937,79.62018238424952
+test (>= cut-off),548879,102580,44093,83.73630618041499

@@ -1,0 +1,51 @@
+step,seconds,heap_peak_gb,process_peak_rss_gb
+1 preprocessing,0.12,0.001,0.51
+2 bipartite matrix,4.97,0.198,0.91
+3 graph co-reader,6.18,0.943,2.86
+3 graph co-liked,3.92,0.565,2.96
+4 weight co-reader raw,0.01,0.111,3.1
+4 weight co-reader jaccard,0.29,0.564,3.1
+4 weight co-reader ppmi,0.36,0.617,3.16
+4 weight co-liked raw,0.0,0.065,3.16
+4 weight co-liked jaccard,0.15,0.328,3.16
+4 weight co-liked ppmi,0.18,0.36,3.16
+5 sparsify co-reader raw,3.89,0.688,3.16
+5 sparsify co-reader jaccard,4.72,0.687,3.16
+5 sparsify co-reader ppmi,4.6,0.682,3.16
+5 sparsify co-liked raw,1.85,0.402,3.16
+5 sparsify co-liked jaccard,2.29,0.402,3.16
+5 sparsify co-liked ppmi,2.27,0.4,3.16
+6 louvain sweep,13.15,0.05,3.16
+6 networkx louvain,41.36,0.28,3.16
+6 spectral embedding,4.32,0.124,3.16
+6 spectral k=20,0.47,0.021,3.16
+6 spectral k=40,0.93,0.042,3.16
+6 spectral k=60,2.56,0.063,3.16
+6 louvain co-reader raw disparity,0.86,0.063,3.16
+6 louvain co-reader raw top10,0.92,0.063,3.16
+6 louvain co-reader jaccard disparity,0.78,0.053,3.16
+6 louvain co-reader jaccard top10,1.08,0.053,3.16
+6 louvain co-reader ppmi disparity,0.89,0.053,3.16
+6 louvain co-reader ppmi top10,1.68,0.053,3.16
+6 louvain co-liked raw disparity,0.76,0.059,3.16
+6 louvain co-liked raw top10,0.89,0.059,3.16
+6 louvain co-liked jaccard disparity,0.84,0.05,3.16
+6 louvain co-liked jaccard top10,1.1,0.051,3.16
+6 louvain co-liked ppmi disparity,0.82,0.047,3.16
+6 louvain co-liked ppmi top10,1.03,0.047,3.16
+8 test set,1.24,0.071,3.16
+8 validation grid,55.95,0.991,3.16
+8 validation lambda,52.88,1.181,3.16
+8 final baselines,90.58,1.007,3.16
+8 final co-reader raw disparity,149.25,1.211,3.16
+8 final co-reader raw top10,143.52,1.21,3.16
+8 final co-reader jaccard disparity,147.3,1.21,3.16
+8 final co-reader jaccard top10,145.64,1.209,3.16
+8 final co-reader ppmi disparity,138.02,1.209,3.16
+8 final co-reader ppmi top10,147.71,1.209,3.16
+8 final co-liked raw disparity,150.37,1.21,3.16
+8 final co-liked raw top10,146.93,1.21,3.16
+8 final co-liked jaccard disparity,137.43,1.209,3.16
+8 final co-liked jaccard top10,148.71,1.209,3.16
+8 final co-liked ppmi disparity,149.34,1.209,3.16
+8 final co-liked ppmi top10,147.15,1.209,3.16

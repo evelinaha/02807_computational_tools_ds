@@ -1,0 +1,421 @@
+{
+  "run": "full_fromall_cut2014-01-01_u5b15",
+  "config": {
+    "data_dir": "/Users/vishwaa/Documents/DTU/computational Tools for data science/data/books_50pct",
+    "cache_dir": null,
+    "window_start": null,
+    "cutoff": "2014-01-01",
+    "min_user_reviews": 5,
+    "min_book_reviews": 15,
+    "like_threshold": 4.0,
+    "exclude_negative_sentiment": false,
+    "sentiment_path": null,
+    "canonical_map_path": null,
+    "sample": false,
+    "sample_user_pct": 15,
+    "seed": 42
+  },
+  "kcore": {
+    "reviews": 2287187,
+    "users": 165151,
+    "books": 51981
+  },
+  "kcore_iterations": 15,
+  "bipartite": {
+    "users": 155442,
+    "books": 47937,
+    "read_nnz": 1738308,
+    "liked_nnz": 1384044,
+    "density_pct": 0.023328536899248013,
+    "books_with_genre": 7489,
+    "books_with_series": 6899
+  },
+  "heavy_users": {
+    "max_degree": 2049,
+    "users_gt500": 34,
+    "pair_share_gt500_pct": 17.5
+  },
+  "modularity_checks": {
+    "modularity_ours": 0.8374322738197311,
+    "modularity_igraph": 0.8374322512967438,
+    "modularity_networkx": 0.837432251296743,
+    "networkx_louvain_modularity": 0.8353029864858652,
+    "nmi_igraph_vs_networkx_partition": 0.8100249084038181
+  },
+  "giant_component_books": 43685,
+  "main_partition": {
+    "n_communities": 412,
+    "n_ge10": 67,
+    "n_ge100": 40,
+    "largest": 6800,
+    "largest_pct": 15.3,
+    "median": 2.0,
+    "pct_nodes_in_ge10": 97.9,
+    "singletons": 0,
+    "labelled_books": 6521,
+    "nmi": 0.29047502001866177,
+    "ari": 0.14673251186754735,
+    "nmi_single_genre": 0.2749287467183412,
+    "nmi_random_baseline": 0.058177506054229416,
+    "modularity": 0.8374322738197311,
+    "mixed_communities": 12,
+    "communities_ge15_labelled": 39
+  },
+  "test": {
+    "users": 74715,
+    "val_users": 14873,
+    "final_users": 59842,
+    "relevant": 261105,
+    "groups": [
+      {
+        "group": "head",
+        "books": 3484,
+        "min_readers": 81,
+        "test_items": 77445
+      },
+      {
+        "group": "mid",
+        "books": 12443,
+        "min_readers": 30,
+        "test_items": 72095
+      },
+      {
+        "group": "tail",
+        "books": 32010,
+        "min_readers": 1,
+        "test_items": 111565
+      }
+    ]
+  },
+  "chosen": {
+    "resolution": 1.0,
+    "within": "personal",
+    "lambda": 0.5
+  },
+  "final_headline": {
+    "all books | most popular": {
+      "recall@10": 0.007537392600346648,
+      "ndcg@10": 0.00516179529574923,
+      "hit@10": 0.019066876107081982,
+      "coverage": 0.0003754928343450779
+    },
+    "all books | item-kNN (co-reader)": {
+      "recall@10": 0.03815164051638577,
+      "ndcg@10": 0.02688637827358472,
+      "hit@10": 0.08808194913271615,
+      "coverage": 0.4883075703527547
+    },
+    "all books | community co-liked / jaccard / disparity": {
+      "recall@10": 0.04357583441257732,
+      "ndcg@10": 0.03139152152437648,
+      "hit@10": 0.09882691086527856,
+      "coverage": 0.8261259569852097
+    },
+    "all books | hybrid co-liked / jaccard / disparity": {
+      "recall@10": 0.04488556110962954,
+      "ndcg@10": 0.03171745401655483,
+      "hit@10": 0.10241970522375589,
+      "coverage": 0.7430794584558901
+    },
+    "all books | backbone-kNN co-liked / jaccard / disparity": {
+      "recall@10": 0.04347941380947502,
+      "ndcg@10": 0.031330269695573634,
+      "hit@10": 0.09919454563684368,
+      "coverage": 0.8422095667229906
+    },
+    "no same-series | most popular": {
+      "recall@10": 0.0076666722760810576,
+      "ndcg@10": 0.0052340732705032905,
+      "hit@10": 0.01914399245689655,
+      "coverage": 0.0003754928343450779
+    },
+    "no same-series | item-kNN (co-reader)": {
+      "recall@10": 0.035289328648319275,
+      "ndcg@10": 0.02474154347573771,
+      "hit@10": 0.08218278556034483,
+      "coverage": 0.4727454784404531
+    },
+    "no same-series | community co-liked / jaccard / disparity": {
+      "recall@10": 0.03858742876077464,
+      "ndcg@10": 0.027986594712589012,
+      "hit@10": 0.08949016702586207,
+      "coverage": 0.8207438930262636
+    },
+    "no same-series | hybrid co-liked / jaccard / disparity": {
+      "recall@10": 0.04098173904846046,
+      "ndcg@10": 0.028904642621067074,
+      "hit@10": 0.09449084051724138,
+      "coverage": 0.7323153305379978
+    },
+    "no same-series | backbone-kNN co-liked / jaccard / disparity": {
+      "recall@10": 0.03853238188428226,
+      "ndcg@10": 0.027942705516674847,
+      "hit@10": 0.08996161099137931,
+      "coverage": 0.8375576277197154
+    }
+  },
+  "significance": [
+    {
+      "a": "community co-liked / jaccard / disparity",
+      "b": "item-kNN (co-reader)",
+      "group": "all",
+      "users": 59392,
+      "mean_a": 0.038587428760774645,
+      "mean_b": 0.035289328648319275,
+      "diff": 0.00329810011245537,
+      "ci_low": 0.0021881887794456276,
+      "ci_high": 0.004531327598059187,
+      "relative_pct": 9.345885112530892,
+      "significant": true
+    },
+    {
+      "a": "community co-liked / jaccard / disparity",
+      "b": "item-kNN (co-reader)",
+      "group": "head",
+      "users": 31251,
+      "mean_a": 0.044111578196729846,
+      "mean_b": 0.07199542257753619,
+      "diff": -0.02788384438080634,
+      "ci_low": -0.030149703505576504,
+      "ci_high": -0.025757228108859734,
+      "relative_pct": -38.73002391336276,
+      "significant": true
+    },
+    {
+      "a": "community co-liked / jaccard / disparity",
+      "b": "item-kNN (co-reader)",
+      "group": "mid",
+      "users": 29843,
+      "mean_a": 0.03791241507119386,
+      "mean_b": 0.02193718394199865,
+      "diff": 0.015975231129195216,
+      "ci_low": 0.014387638493797462,
+      "ci_high": 0.01766485264276876,
+      "relative_pct": 72.82261557104738,
+      "significant": true
+    },
+    {
+      "a": "community co-liked / jaccard / disparity",
+      "b": "item-kNN (co-reader)",
+      "group": "tail",
+      "users": 37040,
+      "mean_a": 0.027206046850908994,
+      "mean_b": 0.008860249666393262,
+      "diff": 0.01834579718451573,
+      "ci_low": 0.01706500811186723,
+      "ci_high": 0.019669606703536558,
+      "relative_pct": 207.0573389607851,
+      "significant": true
+    },
+    {
+      "a": "hybrid co-liked / jaccard / disparity",
+      "b": "item-kNN (co-reader)",
+      "group": "all",
+      "users": 59392,
+      "mean_a": 0.04098173904846046,
+      "mean_b": 0.035289328648319275,
+      "diff": 0.005692410400141187,
+      "ci_low": 0.004805250336594167,
+      "ci_high": 0.006564889358754087,
+      "relative_pct": 16.130684878904034,
+      "significant": true
+    },
+    {
+      "a": "hybrid co-liked / jaccard / disparity",
+      "b": "item-kNN (co-reader)",
+      "group": "head",
+      "users": 31251,
+      "mean_a": 0.06437841228342166,
+      "mean_b": 0.07199542257753619,
+      "diff": -0.00761701029411453,
+      "ci_low": -0.00927428997805567,
+      "ci_high": -0.006065607092287592,
+      "relative_pct": -10.579853581540291,
+      "significant": true
+    },
+    {
+      "a": "hybrid co-liked / jaccard / disparity",
+      "b": "item-kNN (co-reader)",
+      "group": "mid",
+      "users": 29843,
+      "mean_a": 0.0336051548710116,
+      "mean_b": 0.02193718394199865,
+      "diff": 0.011667970929012951,
+      "ci_low": 0.010465916269007747,
+      "ci_high": 0.012958933679138173,
+      "relative_pct": 53.18809816183684,
+      "significant": true
+    },
+    {
+      "a": "hybrid co-liked / jaccard / disparity",
+      "b": "item-kNN (co-reader)",
+      "group": "tail",
+      "users": 37040,
+      "mean_a": 0.019828641276393413,
+      "mean_b": 0.008860249666393262,
+      "diff": 0.010968391610000147,
+      "ci_low": 0.010006826161255597,
+      "ci_high": 0.011893619835430223,
+      "relative_pct": 123.79325665734932,
+      "significant": true
+    },
+    {
+      "a": "community co-liked / jaccard / disparity",
+      "b": "backbone-kNN co-liked / jaccard / disparity",
+      "group": "all",
+      "users": 59392,
+      "mean_a": 0.038587428760774645,
+      "mean_b": 0.03853238188428226,
+      "diff": 5.5046876492379186e-05,
+      "ci_low": -0.00029727796527165864,
+      "ci_high": 0.000409634778216671,
+      "relative_pct": 0.14285874321938388,
+      "significant": false
+    },
+    {
+      "a": "community co-liked / jaccard / disparity",
+      "b": "backbone-kNN co-liked / jaccard / disparity",
+      "group": "head",
+      "users": 31251,
+      "mean_a": 0.044111578196729846,
+      "mean_b": 0.04378508654273309,
+      "diff": 0.00032649165399676016,
+      "ci_low": -0.0004910234986496683,
+      "ci_high": 0.0011056529706001885,
+      "relative_pct": 0.7456686277829163,
+      "significant": false
+    },
+    {
+      "a": "community co-liked / jaccard / disparity",
+      "b": "backbone-kNN co-liked / jaccard / disparity",
+      "group": "mid",
+      "users": 29843,
+      "mean_a": 0.03791241507119386,
+      "mean_b": 0.03774158720961776,
+      "diff": 0.00017082786157611074,
+      "ci_low": -0.000286079823031537,
+      "ci_high": 0.0006487835279763034,
+      "relative_pct": 0.4526250065407381,
+      "significant": false
+    },
+    {
+      "a": "community co-liked / jaccard / disparity",
+      "b": "backbone-kNN co-liked / jaccard / disparity",
+      "group": "tail",
+      "users": 37040,
+      "mean_a": 0.027206046850908994,
+      "mean_b": 0.027399131719183453,
+      "diff": -0.00019308486827445916,
+      "ci_low": -0.00045338219304433773,
+      "ci_high": 4.8196976452126306e-05,
+      "relative_pct": -0.7047116319356614,
+      "significant": false
+    },
+    {
+      "a": "backbone-kNN co-liked / jaccard / disparity",
+      "b": "item-kNN (co-reader)",
+      "group": "all",
+      "users": 59392,
+      "mean_a": 0.03853238188428226,
+      "mean_b": 0.035289328648319275,
+      "diff": 0.003243053235962991,
+      "ci_low": 0.00211567740126737,
+      "ci_high": 0.004454497458053774,
+      "relative_pct": 9.189897796815831,
+      "significant": true
+    },
+    {
+      "a": "backbone-kNN co-liked / jaccard / disparity",
+      "b": "item-kNN (co-reader)",
+      "group": "head",
+      "users": 31251,
+      "mean_a": 0.04378508654273309,
+      "mean_b": 0.07199542257753619,
+      "diff": -0.0282103360348031,
+      "ci_low": -0.030446706281200595,
+      "ci_high": -0.02605838669061787,
+      "relative_pct": -39.18351337464781,
+      "significant": true
+    },
+    {
+      "a": "backbone-kNN co-liked / jaccard / disparity",
+      "b": "item-kNN (co-reader)",
+      "group": "mid",
+      "users": 29843,
+      "mean_a": 0.03774158720961776,
+      "mean_b": 0.02193718394199865,
+      "diff": 0.015804403267619106,
+      "ci_low": 0.014230702711407238,
+      "ci_high": 0.017463144128138975,
+      "relative_pct": 72.04390184905017,
+      "significant": true
+    },
+    {
+      "a": "backbone-kNN co-liked / jaccard / disparity",
+      "b": "item-kNN (co-reader)",
+      "group": "tail",
+      "users": 37040,
+      "mean_a": 0.027399131719183453,
+      "mean_b": 0.008860249666393262,
+      "diff": 0.018538882052790185,
+      "ci_low": 0.01727546867356552,
+      "ci_high": 0.019824329459755267,
+      "relative_pct": 209.23656500457056,
+      "significant": true
+    },
+    {
+      "a": "item-kNN (co-reader)",
+      "b": "most popular",
+      "group": "all",
+      "users": 59392,
+      "mean_a": 0.035289328648319275,
+      "mean_b": 0.0076666722760810576,
+      "diff": 0.027622656372238215,
+      "ci_low": 0.02635212365628963,
+      "ci_high": 0.028867234572348625,
+      "relative_pct": 360.295254284144,
+      "significant": true
+    },
+    {
+      "a": "item-kNN (co-reader)",
+      "b": "most popular",
+      "group": "head",
+      "users": 31251,
+      "mean_a": 0.07199542257753619,
+      "mean_b": 0.0210478999569077,
+      "diff": 0.05094752262062849,
+      "ci_low": 0.0484633873505196,
+      "ci_high": 0.05363535534021475,
+      "relative_pct": 242.0551348349983,
+      "significant": true
+    },
+    {
+      "a": "item-kNN (co-reader)",
+      "b": "most popular",
+      "group": "mid",
+      "users": 29843,
+      "mean_a": 0.02193718394199865,
+      "mean_b": 0.0,
+      "diff": 0.02193718394199865,
+      "ci_low": 0.0204173812892218,
+      "ci_high": 0.023469042382951708,
+      "relative_pct": NaN,
+      "significant": true
+    },
+    {
+      "a": "item-kNN (co-reader)",
+      "b": "most popular",
+      "group": "tail",
+      "users": 37040,
+      "mean_a": 0.008860249666393262,
+      "mean_b": 0.0,
+      "diff": 0.008860249666393262,
+      "ci_low": 0.008060057084206254,
+      "ci_high": 0.009756088694513273,
+      "relative_pct": NaN,
+      "significant": true
+    }
+  ],
+  "peak_rss_gb": 3.16,
+  "total_runtime_min": 34.4
+}

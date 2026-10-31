@@ -42,7 +42,7 @@ def user_weights(user_degree: np.ndarray, scheme: str = "log") -> np.ndarray:
 
     ``"log"``: w_u = 1 / log(1 + d_u). One user who read d books adds a pair to d(d-1)/2
     book pairs, so a handful of users with hundreds or thousands of books would otherwise
-    dominate the edge weights (here the 0.4% of training users with >500 books create 17%
+    dominate the edge weights (here the 34 training users with >500 books create 17.5%
     of all co-occurrence pairs). Their co-reads are also less informative: someone who
     reviews everything says little about two books being similar. The log keeps them in
     the graph but makes a user with 1,000 books count ~2.6x less than one with 14 books -
