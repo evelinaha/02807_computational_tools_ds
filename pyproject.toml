@@ -9,11 +9,33 @@ authors = [
 requires-python = ">=3.13"
 dependencies = [
     "cookiecutter>=2.7.1",
+    "duckdb>=2.0.0",
+    "matplotlib>=3.11.2",
+    "networkx>=3.7",
+    "numpy>=2.5.4",
+    "pandas>=3.1.0",
+    "pyarrow>=26.0.0",
+    "python-igraph>=1.0.0",
+    "scikit-learn>=1.9.1",
+    "scipy>=1.18.1",
 ]
 
 [project.scripts]
-02807-computational-tools-ds = "02807_computational_tools_ds:main"
+ctds = "ctds:main"
 
 [build-system]
 requires = ["uv_build>=0.12.7,<0.13.0"]
 build-backend = "uv_build"
+
+# The distribution name starts with a digit, which is not a valid Python identifier,
+# so the importable package is called `ctds` (import ctds).
+[tool.uv.build-backend]
+module-name = "ctds"
+
+[dependency-groups]
+dev = [
+    "ipykernel>=7.4.0",
+    "nbconvert>=7.17.2",
+    "nbformat>=5.11.1",
+    "pytest>=9.2.0",
+]

@@ -1,0 +1,18 @@
+# --- Data: never commit raw data, zips or caches (they live in ../data, outside the repo) ---
+data/
+cache/
+*.zip
+*.parquet
+*.npz
+*.jsonl
+*.jsonl.gz
+*.csv.gz
+*.pkl
+
+# --- Python / tooling ---
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ipynb_checkpoints/
+.DS_Store
