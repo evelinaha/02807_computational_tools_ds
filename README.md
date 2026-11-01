@@ -7,4 +7,5 @@
 - Data: unzip `books_50pct.zip` into `../data/books_50pct/` next to the repo (or set `CTDS_DATA_DIR`).
   Data and caches are never committed.
 - Decisions: `docs/graph_clustering_decisions.md`. Results: `docs/graph_clustering_results.md`.
+  Work log: `docs/graph_clustering_worklog.md`.
 - Tests: `uv run pytest`.
