@@ -4,6 +4,7 @@ A record of the work done on the graph-clustering part (owner: Vishwaa), in the 
 see what exists, how it was produced and what is still open. Details are in two companion documents:
 - [`graph_clustering_decisions.md`](graph_clustering_decisions.md): every decision (D1–D25) and why it was made.
 - [`graph_clustering_results.md`](graph_clustering_results.md): all numbers, tables and figure paths.
+- [`data_acquisition.md`](data_acquisition.md): how the data was pulled, unzipped, inspected and loaded.
 
 ## Starting point (2026-10-31)
 
@@ -19,7 +20,8 @@ see what exists, how it was produced and what is still open. Details are in two 
 ## Step 0: data inspection, before any pipeline code
 
 The data was profiled with DuckDB, out of core: sizes, schema, sample rows, missing values, distributions, date
-range and k-core simulations. The results were reported back, and these choices were confirmed before any thresholds
+range and k-core simulations. This is now `scripts/inspect_data.py`, with its output in
+`docs/results/data_inspection.txt`. The results were reported back, and these choices were confirmed before any thresholds
 were set.
 
 The data differs from the group plan's assumptions in three ways:

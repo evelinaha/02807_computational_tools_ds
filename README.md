@@ -8,4 +8,6 @@
   Data and caches are never committed.
 - Decisions: `docs/graph_clustering_decisions.md`. Results: `docs/graph_clustering_results.md`.
   Work log: `docs/graph_clustering_worklog.md`.
+- Data (how it was pulled, unzipped, inspected and loaded): `docs/data_acquisition.md`;
+  Step-0 inspection: `uv run python scripts/inspect_data.py`.
 - Tests: `uv run pytest`.

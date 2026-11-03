@@ -1,0 +1,173 @@
+== books_50pct_users_reviews.parquet: 2,311 MB, 4,408,904 rows, 5 row groups
+user_id: large_string
+item_id: large_string
+rating: double
+summary: large_string
+review_text: large_string
+helpful_votes: list<element: int64>
+  child 0, element: int64
+timestamp: int64
+== books_50pct_users_meta.parquet: 158 MB, 349,741 rows, 1 row groups
+item_id: large_string
+title: large_string
+description: large_string
+price: double
+brand: large_string
+categories: list<element: list<element: string>>
+  child 0, element: list<element: string>
+      child 0, element: string
+
+### reviews: size, ids, time range (timestamp is Unix SECONDS), missing values
+         n   users   items              first_review               last_review  rating_null  empty_text  empty_summary
+0  4408904  301553  349741 1996-05-20 00:00:00+00:00 2014-07-23 00:00:00+00:00          0.0       314.0           11.0
+(2.1s)
+
+### sample rows
+                 user_id     item_id  rating                                summary                                                          text helpful_votes   timestamp
+0  A10000012B7CGYKOMPQ4L  000100039X     5.0                             Wonderful!  Spiritually and mentally inspiring! A book that allows you t        [0, 0]  1355616000
+1         A12387207U8U24  000100039X     5.0                             Graet Work  As you read, Gibran's poetry brings spiritual and visual bea        [0, 0]  1206662400
+2         A29TRDMK51GKZR  000100039X     5.0                            Such Beauty  Deep, moving dramatic verses of the heart and soul.Truths of        [0, 0]  1383436800
+3         A3FI0744PG1WYG  000100039X     5.0                            The Prophet  This is a timeless classic.  Over the years I've given it as        [0, 0]  1390953600
+4         A19N3FCQCLJYUA  000100039X     5.0  A book everyone &#34;should&#34; read  I discovered The Prophet fifty years ago in college and have        [1, 1]  1358899200
+(0.3s)
+
+### duplicate (user, item) pairs
+   dup_pairs
+0          0
+(0.4s)
+
+### rating distribution
+   rating        n    pct
+0     1.0   161347   3.66
+1     2.0   205433   4.66
+2     3.0   472669  10.72
+3     4.0  1095438  24.85
+4     5.0  2474017  56.11
+(0.1s)
+
+### reviews per year
+      yr        n  cum_pct
+0   1996        5      0.0
+1   1997      894      0.0
+2   1998     4486      0.1
+3   1999     9546      0.3
+4   2000    43665      1.3
+5   2001    47832      2.4
+6   2002    50146      3.6
+7   2003    50788      4.7
+8   2004    60985      6.1
+9   2005    81752      7.9
+10  2006    93466     10.1
+11  2007   117088     12.7
+12  2008   134922     15.8
+13  2009   171577     19.7
+14  2010   203040     24.3
+15  2011   292580     30.9
+16  2012   582360     44.1
+17  2013  1483472     77.8
+18  2014   980300    100.0
+(0.0s)
+
+### reviews per user
+      cnt  mn  p25  med   p75   p90    p99     mx  mean     lt5      lt10      lt20  ge1000
+0  301553   3  6.0  8.0  12.0  24.0  129.0  15761  14.6  1301.0  192613.0  261639.0    38.0
+(0.1s)
+
+### reviews per book
+      cnt  mn  p25  med   p75   p90    p99    mx  mean       lt5      lt10      lt20  ge1000
+0  349741   2  3.0  6.0  11.0  24.0  116.0  3722  12.6  137265.0  246911.0  303630.0    47.0
+(0.0s)
+
+### metadata: missing-value rates (%)
+        n  title_missing  description_missing  brand_author_missing  price_missing  only_books_category
+0  349741           22.2                 35.1                 100.0            4.1                 77.9
+(0.3s)
+
+### review items without metadata
+   n
+0  0
+(0.0s)
+
+### top-level categories
+                    lvl1       n
+0                  Books  452334
+1           Kindle Store  211463
+2  Arts, Crafts & Sewing      43
+3      Sports & Outdoors       1
+4           Toys & Games       1
+(0.0s)
+
+### second-level genres (Books > X)
+                           genre  books
+0           Literature & Fiction  50436
+1                        Romance  25532
+2      Science Fiction & Fantasy   9634
+3   Mystery, Thriller & Suspense   8270
+4      Health, Fitness & Dieting   4019
+5               Children's Books   3791
+6        Religion & Spirituality   3280
+7                      Self-Help   3122
+8       Christian Books & Bibles   2969
+9         Cookbooks, Food & Wine   2884
+10                 Gay & Lesbian   2839
+11            Teen & Young Adult   2831
+12              Business & Money   2212
+13                     Reference   2035
+14        Crafts, Hobbies & Home   1673
+15         Biographies & Memoirs   1590
+16         Humor & Entertainment   1496
+17                       History   1037
+18     Parenting & Relationships   1004
+19        Computers & Technology    859
+20    Politics & Social Sciences    666
+21                        Travel    605
+22             Sports & Outdoors    541
+23          Education & Teaching    526
+24            Arts & Photography    518
+25                 Medical Books    440
+26                Science & Math    436
+27       Comics & Graphic Novels    278
+28  Engineering & Transportation    119
+29                           Law     65
+30                     Calendars      1
+(0.0s)
+
+### Kindle eBooks genres (Kindle Store > Kindle eBooks > X)
+                           genre  books
+0           Literature & Fiction  33152
+1                        Romance  25837
+2      Science Fiction & Fantasy  10010
+3   Mystery, Thriller & Suspense   8290
+4      Health, Fitness & Dieting   4955
+5             Teen & Young Adult   4621
+6        Religion & Spirituality   4507
+7              Children's eBooks   3741
+8         Cookbooks, Food & Wine   2731
+9               Business & Money   2305
+10                     Self-Help   1905
+11        Crafts, Hobbies & Home   1578
+12         Biographies & Memoirs   1525
+13         Humor & Entertainment   1506
+14                     Reference   1216
+(0.0s)
+
+### iterative k-core simulations (applied to the whole window, before the time split)
+       window  user>=  book>=  reviews   users  books  iterations  test_share_cut_2013-07-01  test_share_cut_2014-01-01
+0        true       5      10  2823435  198192  86924           9                      0.419                      0.236
+1        true       5      15  2287187  165151  51981          16                      0.428                      0.240
+2        true       5      20  1910700  141909  34978          11                      0.434                      0.242
+3  yr >= 2010       5      10  2154475  156183  65240          12                      0.513                      0.289
+4  yr >= 2010       5      15  1752800  130690  39377          12                      0.518                      0.291
+5  yr >= 2010       5      20  1467418  112523  26625          10                      0.522                      0.292
+
+### evaluable test users for the chosen k-core (5/15, all years); liked = rating >= 4
+
+### cut-off 2013-07-01
+   train_reviews  test_reviews  train_books  evaluable_users
+0      1308961.0      978226.0        42446          78866.0
+(0.0s)
+
+### cut-off 2014-01-01
+   train_reviews  test_reviews  train_books  evaluable_users
+0      1738308.0      548879.0        47937          74715.0
+(0.0s)
