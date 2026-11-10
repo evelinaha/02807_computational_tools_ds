@@ -36,7 +36,7 @@ where relevant, what it means for the rest of the group. Results are in
 - Ratings: 56% are 5★, 25% are 4★, 11% are 3★ and 8% are 1–2★.
 - The data is skewed. Reviews per user: median 8, p99 129, max 15,761 (38 users have
   1,000 or more). Reviews per book: median 6, p99 116, max 3,722.
-- The years are uneven. 78% of reviews are from 2012 onward (2013 alone is 34%, and
+- The years are uneven. 69% of reviews are from 2012 onward (2013 alone is 34%, and
   January–July 2014 is 22%).
 - **Metadata gaps:** `brand` is empty for every book, so there is **no author**. Titles are
   missing for 22% of books and descriptions for 35%. 78% of books carry only the category
