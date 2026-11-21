@@ -39,6 +39,9 @@ dev = [
     "nbformat>=5.11.1",
     "pytest>=9.2.0",
 ]
+text = [
+    "sentence-transformers>=6.3.0",
+]
 
 [tool.pytest.ini_options]
 # Also works when macOS marks the venv's .pth file "hidden" (Python 3.13 then skips it).

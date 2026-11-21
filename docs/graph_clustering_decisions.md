@@ -88,7 +88,19 @@ and k-core (D1, D2) so that the test items are identical.
 | D24 | **Significance:** paired bootstrap over users (2,000 resamples, 95% CI) of per-user recall@10. | Differences of a few thousandths need intervals. |
 | D25 | **Metrics:** Hit@10, Recall@10 (hits / number of relevant items), NDCG@10 (binary relevance, ideal DCG over min(#relevant, 10)), and catalogue coverage. | These are standard top-k metrics. |
 
-## 5. Practical notes
+## 5. Using Ana Rita's description similarity (added 2026-11-21)
+
+Ana Rita, who did the similarity part, asked that the graph clustering use her book similarity instead of only our
+own co-reader similarity. Results are in section 9 of the results document.
+
+| # | Decision | Why |
+|---|---|---|
+| D26 | **Reimplement her similarity on our catalogue** in `src/ctds/graph/content.py`: her `clean_text`, SBERT `all-MiniLM-L6-v2`, L2-normalised embeddings (cosine), and only books with a title and a description. Her notebook is not modified. | Her notebook computes the similarity for one query book at a time on a 5,000-book random sample and saves no file, so there were no stored results to load. Running her method on our 47,937 training books keeps her method and puts it on the graph's book index. |
+| D27 | **Turn it into a 10-nearest-neighbour graph** (exact search in blocks, edge kept if either book chose it, weight = cosine). | This is the same edge budget per book as the top-10 baseline, so it is comparable with the backbones. 34k books × 384 dimensions is small enough for exact search (9 s). |
+| D28 | **Keep the co-reader backbone and add her graph to it**, rather than replacing it: (1 − β)·co-liked / mean + β·content / mean, with β chosen on validation users (0.25). Her graph alone is reported too. | The co-reader backbone is what gives the 3× tail recall. Replacing it would lose that result: her graph alone reaches recall 0.013 against 0.039. Dividing each graph by its mean edge weight puts Jaccard (mostly < 0.1) and cosine (0.3–0.9) on one scale. |
+| D29 | **sentence-transformers is an optional dependency group** (`uv sync --group text`). | It pulls in torch (about 1 GB). Group members who don't run the content graph keep a light install. |
+
+## 6. Practical notes
 
 - On this Mac the project venv's `.pth` file gets the macOS "hidden" flag after `uv sync`, and Python 3.13 skips
   hidden `.pth` files, so `import ctds` fails. The notebook adds `src/` to `sys.path` itself and pytest has

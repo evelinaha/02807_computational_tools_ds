@@ -234,14 +234,89 @@ Peak process memory was 3.2 GB.
 | Sparse matrices, B^T B projection | Top-k evaluation (Hit / Recall / NDCG), popularity groups, paired bootstrap |
 | NMI / ARI for comparing partitions | Community-restricted personal ranking and the hybrid recommender |
 
+## 9. Graph clustering with Ana Rita's description similarity (`content_*.csv`, `content_summary.json`)
+
+Ana Rita's similarity part compares books by their descriptions: SBERT `all-MiniLM-L6-v2` embeddings of the
+cleaned description, compared by cosine similarity (`CTFDS_project (5).ipynb`). Her notebook ran it on a 5,000-book
+sample and did not save a similarity file, so `src/ctds/graph/content.py` applies her exact text cleaning, model and
+filter (book needs a title and a description) to every book in our training graph. Each book keeps its 10 most
+similar books (exact search), which gives a **content graph** on the same book index as the co-reader graphs.
+`scripts/content_graph_experiment.py` clusters and evaluates it with the same test users, popularity groups and
+same-series filter as section 6. Its edge list is cached as `content_knn_edges.parquet` (the notebook's
+`TEXT_GRAPH_PATH` format).
+
+**Coverage.** 33,516 of the 47,937 training books (70%) have a title and a description. The content graph has
+270,507 edges with a mean cosine similarity of 0.56. Only 5.6% of them are also edges of the co-liked backbone, so
+the two graphs carry largely different information.
+
+**Graphs compared.** We compare three graphs:
+
+- `co-liked`: the main backbone, which reproduces section 6 exactly. Its validation recall is 0.0430, the same as
+  `validation_grid.csv`.
+- `content`: Ana Rita's similarity alone.
+- `combined`: (1 − β)·co-liked / mean + β·content / mean. Each graph is first divided by its mean edge weight
+  because Jaccard and cosine are on different scales.
+
+β ∈ {0.1, 0.25, 0.5, 0.75}, the resolution and the hybrid λ were chosen on the validation users. The choice was
+**β = 0.25, resolution 5, ranking with the combined graph's own edges, λ = 0.7**. Ranking inside the combined
+communities with only the co-liked edges was worse in every setting, so the content edges help the ranking as well
+as the communities.
+
+Recall@10 on the 59,842 held-out users, without same-series books:
+
+| Recommender | Recall@10 | Head | Mid | Tail | Coverage |
+|---|---|---|---|---|---|
+| item-kNN (purchase overlap) | 0.0353 | **0.0720** | 0.0219 | 0.0089 | 47% |
+| community, co-liked (section 6) | 0.0386 | 0.0441 | 0.0379 | 0.0272 | 82% |
+| backbone-kNN, co-liked | 0.0385 | 0.0438 | 0.0377 | 0.0274 | 84% |
+| community, content only | 0.0132 | 0.0147 | 0.0106 | 0.0108 | 59% |
+| **community, combined** | 0.0388 | 0.0426 | **0.0382** | **0.0289** | 84% |
+| backbone-kNN, combined | 0.0383 | 0.0415 | 0.0383 | 0.0285 | 88% |
+| hybrid, co-liked (λ = 0.5) | 0.0410 | 0.0644 | 0.0336 | 0.0198 | 73% |
+| **hybrid, combined** (λ = 0.7) | **0.0414** | 0.0561 | 0.0369 | 0.0247 | 80% |
+
+Paired bootstrap (`content_significance_recall.csv`, 95% CI):
+
+| Comparison | Overall | Tail |
+|---|---|---|
+| community combined − community co-liked | +0.7% (n.s.) | **+6.3%** (CI +4% to +8%) |
+| community combined − backbone-kNN combined | **+1.3%** (CI +0.3% to +2.4%) | +1.3% (n.s.) |
+| community combined − item-kNN | **+10%** | **3.3×** |
+| hybrid combined − hybrid co-liked | +1.1% (n.s.) | **+25%** (mid +10%, head −13%) |
+| community content − item-kNN | −63% | **+22%** |
+
+**Findings.**
+
+1. **Ana Rita's similarity alone is a weak recommender.** At 0.013 it reaches a third of the co-reader communities'
+   recall. A similar description says what a book is about, not who reads it, and 30% of the books have no
+   description at all. It still beats purchase overlap on the long tail (+22%), because it doesn't depend on
+   popularity.
+2. **Added to the reader graph, it improves the long tail.** The combined communities find tail books 6% more often
+   than the co-liked communities (significant). Overall recall is unchanged, because the head loses 3.5%. As a
+   hybrid it shifts recall towards the middle and tail (+10% and +25%) at the same overall recall.
+   These hybrid gains are partly due to λ: validation chose 0.7 for the combined graph against 0.5 before.
+3. **With her similarity, clustering becomes useful.** On the co-liked backbone alone, restricting to communities
+   added nothing, because 91% of the edge weight already lay inside communities (section 6). On the combined graph
+   that share falls to 68%, and the community recommender beats the same graph without communities. The gain is
+   +1.3% and significant; it is the first time communities beat backbone-kNN. The co-reader edges carry 75% of the
+   weight and so mostly decide the communities. Restricting to a community therefore filters out the content edges
+   that link books read by different audiences.
+4. **Partitions.** The combined partition (β = 0.25, γ = 5) has 296 communities (186 with 10 or more books),
+   modularity 0.67 and NMI 0.28 against genres (random 0.07). That is close to the co-liked partition's 0.29.
+   Genre agreement could not be measured for the content-only graph: books with a genre label almost never have a
+   title in this metadata (5 of 7,489), and Ana Rita's filter requires one.
+
 ## What this means for the report
 
 - **Supported:** graphs built from co-readers and co-liked books, weighted with Jaccard and sparsified to a local
   backbone, recommend long-tail books much better than purchase overlap alone (3× tail recall, significant). They
   also cover far more of the catalogue.
-- **Not supported:** that *the clustering step* is what produces this gain. On the same backbone, restricting
-  candidates to communities neither helps nor hurts (n.s.), because 91% of the backbone's weight is already inside
-  communities. The report should say so plainly.
+- **Not supported on the reader graph alone:** that *the clustering step* is what produces this gain. On the same
+  backbone, restricting candidates to communities neither helps nor hurts (n.s.), because 91% of the backbone's
+  weight is already inside communities. The report should say so plainly.
+- **Partly supported once Ana Rita's description similarity is added (section 9):** on the combined graph the
+  communities beat the same graph without communities (+1.3%, significant) and raise tail recall by 6% over the
+  reader-only communities. Her similarity on its own is a weak recommender (0.013).
 - **Where clustering does contribute:**
   - **Interpretability:** readable reader communities and cross-genre findings, with NMI 0.29 against genres.
   - **Compression:** the communities can stand in for the full backbone at no accuracy cost (412 groups vs

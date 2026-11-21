@@ -1,6 +1,6 @@
 # Reader Communities for Long-Tail Book Recommendations
 
-*Draft of 2026-11-10. Editable version: the Claude Docs report. Limit: 11,000 characters excluding spaces (this draft: about 9,300).*
+*Draft of 2026-11-21 (adds the description-similarity graph). Limit: 11,000 characters excluding spaces (this draft: about 10,300, close to the limit).*
 
 02807 Computational Tools for Data Science, final project. Group members: Evelina Haite, Ana Rita Ferreira, Yuktha [surname], Vishwaa [surname], [fifth member, if any].
 
@@ -10,11 +10,11 @@
 
 1. merges duplicate editions with MinHash LSH
 2. builds co-reader and co-liked book graphs from 1.7M training reviews, weights the edges with Jaccard and PPMI, and keeps a disparity-filter backbone
-3. clusters the backbone with Louvain and with our own spectral clustering
+3. adds a graph of SBERT description similarity, then clusters with Louvain and with our own spectral clustering
 4. recommends books from each user's communities and evaluates on the held-out 2014 reviews
 5. handles new books with SBERT similarity, searched with random-hyperplane LSH
 
-The graph recommenders find long-tail books 3× more often than purchase overlap (recall@10 0.027 vs 0.009, significant). The communities are coherent (modularity 0.84). But the gain comes from the weighted backbone rather than from the community step (Section 5).
+The graph recommenders find long-tail books 3× more often than purchase overlap (recall@10 0.027 vs 0.009, significant). The communities are coherent (modularity 0.84). On the reader graph alone the gain comes from the weighted backbone rather than from the community step; once description similarity is added, the communities beat the same graph without them and raise tail recall by a further 6% (Section 5).
 
 - **Course topics:** similar items / LSH, and graph clustering (Louvain, spectral clustering, modularity).
 - **Outside the course:** the disparity filter, PPMI, and SBERT sentence embeddings.
@@ -72,6 +72,8 @@ At a fixed α = 0.05, raw weights keep 47% of books but PPMI only 3%. PPMI weigh
 
 Our modularity function matches networkx and igraph to 8 decimal places.
 
+**Description similarity.** Ana Rita's similarity compares books by SBERT (all-MiniLM-L6-v2) embeddings of their cleaned descriptions, by cosine. Each of the 33.5k training books with a title and a description keeps its 10 most similar books. Only 5.6% of these edges are also backbone edges. The combined graph is 0.75 × backbone + 0.25 × description graph, each divided by its mean edge weight; the share 0.25 was chosen on validation users.
+
 ### 3.4 Recommenders and evaluation
 
 **Community recommender.** It takes books from the communities of the books a user liked before the cut-off. Inside a community, books are ranked by their backbone links to the user's own liked books. Ranking by centrality, as first planned, gave every reader in a community the same books and scored below "most popular".
@@ -104,9 +106,12 @@ A new book has no readers. For each of 9,108 books first reviewed after the cut-
 |---|---|---|---|---|---|
 | Most popular | 0.008 | 0.021 | 0 | 0 | 0.04% |
 | Item-kNN (purchase overlap) | 0.035 | **0.072** | 0.022 | 0.009 | 47% |
-| Community | 0.039 | 0.044 | **0.038** | **0.027** | 82% |
-| Hybrid, λ = 0.5 | **0.041** | 0.064 | 0.034 | 0.020 | 73% |
+| Community | 0.039 | 0.044 | 0.038 | 0.027 | 82% |
+| Hybrid, λ = 0.5 | 0.041 | 0.064 | 0.034 | 0.020 | 73% |
 | Backbone-kNN (no communities) | 0.039 | 0.044 | 0.038 | 0.027 | 84% |
+| Community, description graph only | 0.013 | 0.015 | 0.011 | 0.011 | 59% |
+| Community, combined graph | 0.039 | 0.043 | **0.038** | **0.029** | 84% |
+| Hybrid, combined, λ = 0.7 | **0.041** | 0.056 | 0.037 | 0.025 | 80% |
 
 ![Recall@10 by book popularity group for the five key recommenders, held-out users, same-series books removed](../figures/full_fromall_cut2014-01-01_u5b15/08_recall_by_group.png)
 
@@ -115,6 +120,7 @@ A new book has no readers. For each of 9,108 books first reviewed after the cut-
 - **Hybrid:** +16% overall, losing only 11% on the head.
 - **Weighting:** Jaccard beats both raw counts and PPMI. PPMI gives popular books rare, unrelated neighbours.
 - **Series:** removing same-series books lowers recall by 8–11%.
+- **Description similarity:** alone it is weak (0.013), but in the combined graph tail recall rises from 0.027 to 0.029 (+6%, CI +4% to +8%), and the communities beat backbone-kNN on the same graph (+1.3%, CI +0.3% to +2.4%).
 
 **Cold start** (hit@10 on the test half of new books):
 
@@ -133,16 +139,16 @@ The LSH search recovers 72% of the exact top-10. Hit rate grows with the number 
 
 The method works for its main goal. Weighted, sparsified reader graphs recommend long-tail books far better than purchase overlap and cover more of the catalogue, and the hybrid keeps most of the head performance.
 
-The **community step itself** adds no accuracy. A backbone-kNN that ignores communities scores the same (difference +0.0001, CI −0.0003 to +0.0004). At resolution 1, 91% of the backbone's edge weight already lies inside communities, so restricting candidates to the user's communities removes almost nothing. At finer resolutions more edges are cut and validation recall falls slightly.
+On the reader graph alone, the **community step itself** adds no accuracy. A backbone-kNN that ignores communities scores the same (difference +0.0001, CI −0.0003 to +0.0004), because 91% of the backbone's edge weight already lies inside communities. The gain there comes from the Jaccard weighting and the local backbone.
 
-So the gain comes from the Jaccard weighting and the local backbone. Clustering contributes interpretable reader communities, the cross-genre findings, and a compact description of the graph: 412 communities instead of 309k edges. Its natural role is the cold start, where a new book has no graph edges: assigning it to a community through its text is the next step, and the evaluation code for this is already prepared.
+Adding description similarity changes this. Description links are largely new (only 6% are also reader links), so in the combined graph only 68% of the weight falls inside communities. Restricting to a community then filters out description links between books with different readers: the communities beat the same graph without them by 1.3% and find 6% more long-tail books. Descriptions alone reach only a third of the reader graph's recall, since they say what a book is about, not who reads it. The two signals complement each other. Clustering also contributes interpretable reader communities and the cross-genre findings.
 
 For new books, adding popularity to text similarity beats both alone. TF-IDF misses meaning that SBERT captures.
 
 **Limitations.**
 - The data is from 2014, and reviews are only a proxy for purchases.
 - The graph results do not yet use the duplicate-edition merge.
-- Only 18% of books have a genre label.
+- Only 18% of books have a genre label, and only 70% have the title and description the similarity graph needs.
 - The series check is approximate.
 - Choices were validated on a split of users, not on a later time period.
 - Sentiment-based liking: [to be added by the sentiment owner].
@@ -152,9 +158,9 @@ For new books, adding popularity to text similarity beats both alone. TF-IDF mis
 | Member | Contribution |
 |---|---|
 | Evelina Haite | Repository; metadata cleaning; TF-IDF and SBERT embeddings; MinHash LSH duplicate detection |
-| Ana Rita Ferreira | Data exploration and filtering scenarios; content-similarity prototype |
+| Ana Rita Ferreira | Data exploration and filtering scenarios; SBERT description similarity, used in the combined graph |
 | Yuktha [surname] | Cold-start evaluation: new-vs-established split, baselines, SBERT + popularity, random-hyperplane LSH |
-| Vishwaa [surname] | Data inspection; graph construction, weighting, disparity filter, Louvain and spectral clustering, community recommender and evaluation |
+| Vishwaa [surname] | Data inspection; graph construction, weighting, disparity filter, Louvain and spectral clustering, description-similarity graph on the full catalogue, community recommender and evaluation |
 | [member] | [sentiment analysis] |
 
 **Appendix:** the notebooks `notebooks/graph_clustering.ipynb`, `1_cold_start_data_prep.ipynb` and `2_cold_start_evaluation.ipynb`, with instructions, at github.com/evelinaha/02807_computational_tools_ds.

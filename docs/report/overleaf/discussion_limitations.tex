@@ -1,0 +1,82 @@
+% ---------------------------------------------------------------------------
+% Discussion & Limitations (whole project). Include with \input{discussion_limitations}.
+% No extra packages needed. About 3,900 characters without spaces.
+% If this section goes in, delete the "Discussion" subsection at the end of
+% graph_clustering.tex: it says the same things and saves ~1,000 characters.
+% ---------------------------------------------------------------------------
+
+\section{Discussion and Limitations}
+\label{sec:discussion}
+
+We set out to answer two questions: can the structure of who reads what surface
+books that purchase overlap neglects, and can a book's text stand in for that
+structure when a book has no readers yet? The answer to both is a qualified yes.
+
+\paragraph{Long-tail recommendation.}
+The graph recommenders find long-tail books three times as often as
+``readers also bought'' (recall@10 of 0.027 against 0.009) and recommend 82\% of
+the catalogue instead of 47\%. The reason lies in how the graph is built.
+Jaccard weighting divides out the popularity of both books, and the disparity
+filter judges every edge against its own book rather than against a global
+threshold, so a niche title keeps its strongest links instead of losing all of
+them. Raw co-occurrence counts, by contrast, reproduce the bestseller bias of
+purchase overlap. The price is paid at the head, where recall falls from 0.072
+to 0.044; blending the two signals recovers most of it and still raises overall
+recall by 16\%.
+
+\paragraph{What clustering adds.}
+On the reader graph alone, our most important finding is also the least
+flattering one. Restricting candidates to a reader's communities gives exactly
+the same accuracy as recommending from the same backbone without communities,
+because 91\% of the backbone's edge weight already lies inside them: Louvain
+recovers structure the backbone already encodes. This changes once the
+description similarity is added to the graph. Description links are largely new
+(only 6\% of them are also reader links), so in the combined graph only 68\% of
+the weight falls inside communities, and the restriction becomes a filter. The
+community recommender then beats the same graph without communities by a small
+but significant 1.3\%, and finds 6\% more long-tail books than reader-only
+communities. The two signals complement rather than replace each other:
+descriptions alone reach only a third of the reader graph's recall. Beyond
+accuracy, the partition is strong (modularity 0.84), agrees with Amazon's genres
+far more than chance (NMI 0.29 against 0.06), and reveals reader groups that cut
+across genres, such as post-apocalyptic thrillers read alongside prepper
+manuals. Personalisation also matters more than membership: ranking a
+community's books by centrality, as first planned, did worse than recommending
+the most popular books.
+
+\paragraph{New books.}
+For books without readers, SBERT similarity combined with popularity gives the
+best hit rate (0.482 against 0.458 for popularity alone). The margin grows to
+69\% on the strict test that requires at least two shared readers, which suggests
+that descriptions capture shared taste and not merely popularity. The gain is
+largest for the least-read new books, exactly the ones popularity cannot help,
+but descriptions shorter than about 200 characters carry too little information
+to be useful. TF-IDF, which only matches shared words, falls well behind SBERT.
+
+\paragraph{Locality-sensitive hashing.}
+LSH proved useful as a candidate generator but not as a final answer. MinHash
+on titles proposed 10,728 duplicate pairs, yet only 819 survived a check on
+title and description, so its candidates had to be verified. Random-hyperplane
+LSH cut the number of comparisons by a factor of 6 to 60 while keeping up to
+72\% of the exact nearest neighbours, but with 150k candidates an exact search
+took only 18.5 seconds as one matrix multiplication. At this scale exact search
+is the better choice; LSH would only pay off on a much larger catalogue.
+
+\paragraph{Limitations.}
+The data comes from the 2014 SNAP release and was drawn from its 5-core subset,
+so every book had at least five reviews before sampling. Our long tail is
+therefore the tail of an already filtered catalogue, and the results may
+overstate how well any method handles truly obscure books. Reviews are only a
+proxy for purchases, and a liked book is defined purely by a rating of at least
+four. This is a coarse signal, since 81\% of all ratings are four or five stars,
+and the review text itself (143 words on average) was never used to judge
+preference.
+% If the sentiment part is added, say here how it refines "liked".
+The metadata has no author field and assigns a genre to only about one book in
+five, so genre agreement is measured on a subset and series were detected
+heuristically from titles. Only 70\% of the books have both a title and a
+description, so the description graph leaves the rest isolated. Duplicate editions were merged only in the cold-start
+part; the graph results treat editions as separate books, which splits their
+readers. Finally, every evaluation is offline and uses a single time split
+(January to July 2014), and absolute recall stays low, as expected when choosing
+ten books out of 48,000.

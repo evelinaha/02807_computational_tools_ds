@@ -182,3 +182,30 @@ def test_community_recommender_prefers_users_community():
     rec = CommunityRecommender(np.array([0, 0, 0, 1, 1, 1]), W, popularity=np.ones(6))
     s = rec.scores(sp.csr_matrix(np.array([[1, 0, 0, 0, 0, 0]], dtype=np.float32)))[0]
     assert s[2] > s[1] > s[3]
+
+
+# ---------------------------------------------------------------- content similarity (Ana Rita's method)
+
+def test_clean_text_matches_similarity_notebook():
+    from ctds.graph.content import clean_text
+    assert clean_text("A &amp; B <br/>  tale\n\nof  two") == "A & B tale of two"
+    assert clean_text(None) == "" and clean_text(float("nan")) == ""
+
+
+def test_knn_similarity_graph_is_symmetric_and_exact():
+    from ctds.graph.content import combine_graphs, knn_similarity_graph, to_edge_list
+    rng = np.random.default_rng(0)
+    E = rng.normal(size=(40, 8)).astype(np.float32)
+    E /= np.linalg.norm(E, axis=1, keepdims=True)
+    nodes = np.arange(0, 80, 2)                       # every other book has an embedding
+    G = knn_similarity_graph(nodes, E, n_books=80, k=3, block_size=7)
+    assert abs(G - G.T).max() < 1e-7 and G.diagonal().sum() == 0
+    assert np.diff(G.indptr)[1::2].sum() == 0          # books without a description stay isolated
+    S = E @ E.T
+    np.fill_diagonal(S, -np.inf)
+    for i in range(40):                                # each book keeps its exact 3 most similar books
+        assert set(np.argsort(-S[i])[:3] * 2) <= set(G[nodes[i]].indices)
+    edges = to_edge_list(G, np.array([f"b{i}" for i in range(80)]))
+    assert len(edges) == G.nnz // 2
+    C = combine_graphs(G, G, 0.3)
+    assert np.allclose(C.data, (G / G.data.mean()).data)
